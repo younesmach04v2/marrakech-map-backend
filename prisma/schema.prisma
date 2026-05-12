@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  CLIENT
+}
+
+model User {
+  id           String      @id @default(cuid())
+  username     String      @unique
+  email        String?     @unique
+  passwordHash String
+  role         UserRole    @default(CLIENT)
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  workspaces   Workspace[]
+}
+
+model Workspace {
+  id            String          @id @default(cuid())
+  name          String
+  ownerId       String
+  owner         User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  timeline      TimelineEvent[]
+  properties    PropertyRecord[]
+  importBatches ImportBatch[]
+}
+
+model ImportBatch {
+  id             String   @id @default(cuid())
+  source         String
+  importedAt     DateTime @default(now())
+  properties     Int
+  userZones      Int
+  customPlaces   Int
+  customDots     Int
+  snapshot       Json
+  workspaceId    String?
+  workspace      Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  importedProperties PropertyRecord[]
+}
+
+model PropertyRecord {
+  id              String   @id
+  title           String
+  type            String
+  lat             Float
+  lng             Float
+  price           Float?
+  initialPrice    Float?
+  surface         Float?
+  rooms           Int?
+  desc            String
+  owned           Boolean  @default(false)
+  sold            Boolean  @default(false)
+  zones           String[]
+  timelineYear    Int?
+  workspaceId     String?
+  workspace       Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  sourceBatchId   String?
+  sourceBatch     ImportBatch? @relation(fields: [sourceBatchId], references: [id], onDelete: SetNull)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model TimelineEvent {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  year        Int
+  title       String
+  payload     Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
