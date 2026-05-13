@@ -1,11 +1,9 @@
+# Build explicite via Docker : l’image finale contient toujours `dist/`.
 # https://docs.railway.com/reference/config-as-code
-# `nest build` a besoin des devDependencies (@nestjs/cli, typescript). Sans ça,
-# l’install « production » ne produit pas `dist/` et `start:prod` plante (Cannot find module dist/main).
 [build]
-builder = "nixpacks"
-# `npm ci` après une phase install Nixpacks peut provoquer EBUSY sur node_modules/.cache.
-# Cache hors du volume de travail + `npm install` évite le teardown agressif de `ci`.
-buildCommand = "NPM_CONFIG_CACHE=/tmp/npm-cache npm install --include=dev --no-audit --no-fund && npx prisma generate && npm run build"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "npm run start:prod"
+# Déjà défini par CMD dans le Dockerfile ; on garde une commande explicite pour Railway.
+startCommand = "node dist/main.js"
