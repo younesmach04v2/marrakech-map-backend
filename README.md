@@ -4,7 +4,7 @@ Backend NestJS + Prisma (PostgreSQL) pour l’application carte Marrakech.
 
 ## Prérequis
 
-- Node.js 20+
+- Node.js **20.11+** (recommandé : **22**, voir `nixpacks.toml` / `.node-version` pour Railway)
 - PostgreSQL
 
 ## Installation

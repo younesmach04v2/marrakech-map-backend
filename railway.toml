@@ -3,7 +3,9 @@
 # l’install « production » ne produit pas `dist/` et `start:prod` plante (Cannot find module dist/main).
 [build]
 builder = "nixpacks"
-buildCommand = "npm ci --include=dev && npx prisma generate && npm run build"
+# `npm ci` après une phase install Nixpacks peut provoquer EBUSY sur node_modules/.cache.
+# Cache hors du volume de travail + `npm install` évite le teardown agressif de `ci`.
+buildCommand = "NPM_CONFIG_CACHE=/tmp/npm-cache npm install --include=dev --no-audit --no-fund && npx prisma generate && npm run build"
 
 [deploy]
 startCommand = "npm run start:prod"

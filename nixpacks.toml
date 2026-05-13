@@ -1,0 +1,4 @@
+# Nest 11 / @nestjs/cli 11 exigent Node >= 20.11 ; Railway utilisait Node 18 par défaut.
+# https://nixpacks.com/docs/configuration/file
+[variables]
+NIXPACKS_NODE_VERSION = "22"
