@@ -1,0 +1,7 @@
+# https://docs.railway.com/reference/config-as-code
+# Évite d’exécuter `nest start` en prod (transpile à la volée) : utilise le build compilé.
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm run start:prod"
