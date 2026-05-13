@@ -81,6 +81,13 @@ export class AuthService {
           isActive: true,
         },
       });
+    } else if (admin.role !== UserRole.ADMIN) {
+      // Ex. inscription « admin » en CLIENT avant le seed : promouvoir pour rétablir l’accès admin.
+      const passwordHash = await bcrypt.hash('admin123', 10);
+      admin = await this.prisma.user.update({
+        where: { id: admin.id },
+        data: { role: UserRole.ADMIN, passwordHash, isActive: true },
+      });
     }
 
     const hasWorkspace = await this.prisma.workspace.findFirst({
