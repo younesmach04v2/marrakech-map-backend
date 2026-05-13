@@ -5,5 +5,7 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-# Déjà défini par CMD dans le Dockerfile ; on garde une commande explicite pour Railway.
-startCommand = "node dist/main.js"
+# Migrations puis API (idempotent). DATABASE_URL requis sur le service.
+# Aligné avec le CMD du Dockerfile.
+startCommand = "sh -c \"npx prisma migrate deploy && node dist/main.js\""
+# Premier déploiement : SEED_ADMIN_ON_BOOT=true, puis false.

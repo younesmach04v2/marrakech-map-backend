@@ -19,6 +19,7 @@ async function bootstrap() {
     const auth = app.get(AuthService);
     await auth.ensureAdminSeed();
   }
-  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+  const port = Number(process.env.PORT ?? 3000);
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();

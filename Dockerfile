@@ -37,4 +37,5 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]
+# À l'exécution : DATABASE_URL requis. Le fichier .env n'est pas copié dans l'image.
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
