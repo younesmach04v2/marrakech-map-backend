@@ -6,12 +6,24 @@ import { PrismaService } from './prisma.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const origins = (process.env.FRONTEND_URL ?? 'http://localhost:4200,http://127.0.0.1:4200')
-    .split(',')
-    .map((s) => s.trim())
+    .split(/[\n,]/)
+    .map((s) => s.trim().replace(/\/+$/, ''))
     .filter(Boolean);
   app.enableCors({
-    origin: origins,
+    origin: (requestOrigin, callback) => {
+      if (!requestOrigin) {
+        callback(null, true);
+        return;
+      }
+      if (origins.includes(requestOrigin)) {
+        callback(null, requestOrigin);
+        return;
+      }
+      callback(null, false);
+    },
     credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
   const prisma = app.get(PrismaService);
   await prisma.enableShutdownHooks(app);
