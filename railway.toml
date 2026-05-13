@@ -1,7 +1,9 @@
 # https://docs.railway.com/reference/config-as-code
-# Évite d’exécuter `nest start` en prod (transpile à la volée) : utilise le build compilé.
+# `nest build` a besoin des devDependencies (@nestjs/cli, typescript). Sans ça,
+# l’install « production » ne produit pas `dist/` et `start:prod` plante (Cannot find module dist/main).
 [build]
 builder = "nixpacks"
+buildCommand = "npm ci --include=dev && npx prisma generate && npm run build"
 
 [deploy]
 startCommand = "npm run start:prod"
