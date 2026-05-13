@@ -67,6 +67,7 @@ export class AuthService {
     return { id: user.id, username: user.username, role: user.role };
   }
 
+  /** Idempotent: ensures user `admin` (password `admin123`) and a default workspace exist. */
   async ensureAdminSeed(): Promise<void> {
     let admin = await this.prisma.user.findUnique({ where: { username: 'admin' } });
     if (!admin) {

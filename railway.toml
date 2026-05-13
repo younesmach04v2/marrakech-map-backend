@@ -8,4 +8,4 @@ dockerfilePath = "Dockerfile"
 # Migrations puis API (idempotent). DATABASE_URL requis sur le service.
 # Aligné avec le CMD du Dockerfile.
 startCommand = "sh -c \"npx prisma migrate deploy && node dist/main.js\""
-# Premier déploiement : SEED_ADMIN_ON_BOOT=true, puis false.
+# Seed admin `admin` / `admin123` + workspace par défaut sauf si SEED_ADMIN_ON_BOOT=false.

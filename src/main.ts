@@ -15,7 +15,7 @@ async function bootstrap() {
   });
   const prisma = app.get(PrismaService);
   await prisma.enableShutdownHooks(app);
-  if (process.env.SEED_ADMIN_ON_BOOT === 'true') {
+  if (process.env.SEED_ADMIN_ON_BOOT !== 'false') {
     const auth = app.get(AuthService);
     await auth.ensureAdminSeed();
   }
